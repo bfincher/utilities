@@ -1,10 +1,9 @@
-package com.fincher.io_channel;
+package com.fincher.thread;
 
 import org.apache.log4j.Logger;
 
 /** <pre> 
- * A Thread wrapper where the idea is that a single threading model should be used for the EC2BMC project.  This
- * thread wrapper provides default behaviors for killing threads and handling exceptions.
+ * This thread wrapper provides default behaviors for killing threads and handling exceptions.
  * 
  * To implement, instantiate this class with a Runnable object.   This Runnable should not contain a indefinite loop,
  * instead, it should have code processing a single iteration of it's task.  
@@ -37,7 +36,7 @@ import org.apache.log4j.Logger;
  * @author Brian Fincher
  *
  */
-public class MyThread extends Thread implements Runnable {
+public class MyThread extends Thread implements Runnable, MyThreadIfc {
 	
 	private static final Logger logger = Logger.getLogger(MyThread.class);
 	
@@ -53,7 +52,7 @@ public class MyThread extends Thread implements Runnable {
 	/** Should execution continue after an exception is encountered.  Defaults to true */
 	private volatile boolean continueAfterException = true;
 	
-	/** Constructs a new Ec2bmcThread
+	/** Constructs a new MyThread
 	 * @param name The name of this thread
 	 * @param runnable To be invoked upon each thread iteration
 	 */
@@ -62,7 +61,7 @@ public class MyThread extends Thread implements Runnable {
 		this.runnable = runnable;
 	}	
 	
-	/** Constructs a new EC2BMC Thread
+	/** Constructs a new MyThread
 	 * @param threadGroup The Java Thread Group for this thread
 	 * @param name The name of this thread
 	 * @param runnable To be invoked upon each thread iteration

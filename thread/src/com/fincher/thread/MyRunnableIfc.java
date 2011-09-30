@@ -1,4 +1,4 @@
-package com.fincher.io_channel;
+package com.fincher.thread;
 
 /** An extension of Runnable that supplies a method to determine if this Runnable should continue to be executed
  * 

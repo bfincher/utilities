@@ -1,4 +1,4 @@
-package com.fincher.io_channel;
+package com.fincher.thread;
 
 /** An object that can handle exceptions thrown by Threads */
 public interface ExceptionHandlerIfc {
