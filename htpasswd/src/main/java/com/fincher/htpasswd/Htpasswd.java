@@ -13,6 +13,7 @@ import com.fincher.NaturalOrderMap;
 
 public class Htpasswd {
 	
+	@SuppressWarnings("restriction")
 	public static String cryptPassword( String password ) throws IOException {
 		try {
 			return "{SHA}" + new sun.misc.BASE64Encoder().encode(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));

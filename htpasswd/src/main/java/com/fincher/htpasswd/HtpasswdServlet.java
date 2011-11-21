@@ -93,7 +93,8 @@ public class HtpasswdServlet extends HttpServlet {
         	out.println("instance number = " + instanceNumber + "<br>");
         	out.println("session is new " + session.isNew() + "<br>");
         	out.println("File contents = " + getFileContents(session) + "<br>");
-        	Enumeration<String> e = request.getParameterNames();
+        	@SuppressWarnings("unchecked")
+			Enumeration<String> e = request.getParameterNames();
         	while (e.hasMoreElements()) {
         		String name = e.nextElement();
         		out.println(name + " " + request.getParameter(name) + "<br>");
