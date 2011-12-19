@@ -25,7 +25,7 @@
     <description>
       Htpasswd Editor
     </description>
-    <display-name>Htpasswd Editort</display-name>
+    <display-name>Htpasswd Editor</display-name>
 
     
     <servlet>
@@ -38,7 +38,7 @@
         
         <init-param>
         	<param-name>passwdFiles</param-name>
-        	<param-value>/etc/subversion/passwd,/var/www/private/.htpasswd</param-value>
+        	<param-value>/etc/subversion/passwd,/var/www/private/.htpasswd,/usr/local/tomcat/webapps/file_sync.htpasswd</param-value>
         </init-param>
         
         <init-param>

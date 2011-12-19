@@ -23,7 +23,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>htpasswsd</finalName>
+		<finalName>htpasswd</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
