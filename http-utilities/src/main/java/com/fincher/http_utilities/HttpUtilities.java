@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Map;
@@ -44,12 +45,19 @@ public class HttpUtilities {
 	
 	public static void downloadFile(File destFile, 
 			String url,
+			String username,
+			String password,
 			String proxyHost,
 			int proxyPort,
 			String proxyUsername,
 			String proxyPassword) throws IOException {
 		
 		HttpClient httpclient = buildHttpClient(proxyHost, proxyPort, proxyUsername, proxyPassword);
+		
+		if (username != null) {
+			
+		}
+		
 		HttpGet httpGet = new HttpGet(url);
 		HttpResponse response = httpclient.execute(httpGet);
 		
@@ -83,7 +91,7 @@ public class HttpUtilities {
 		}	
 	}
 	
-	public static final void uploadFile(String url, 
+	public static final void uploadFile(URL url, 
 			File file,
 			Map<String, String> params,
 			String proxyHost,
@@ -94,7 +102,7 @@ public class HttpUtilities {
 		HttpClient httpclient = buildHttpClient(proxyHost, proxyPort, proxyUsername, proxyPassword);
 		
 		try {
-			HttpPost httppost = new HttpPost(url);
+			HttpPost httppost = new HttpPost(url.toString());
 
 			FileBody bin = new FileBody(file);
 
