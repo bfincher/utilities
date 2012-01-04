@@ -20,7 +20,9 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.NTCredentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -34,6 +36,7 @@ import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.auth.NTLMSchemeFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
@@ -52,13 +55,19 @@ public class HttpUtilities {
 			String proxyUsername,
 			String proxyPassword) throws IOException {
 		
-		HttpClient httpclient = buildHttpClient(proxyHost, proxyPort, proxyUsername, proxyPassword);
-		
-		if (username != null) {
-			
-		}
+		HttpClient httpclient = buildHttpClient(proxyHost, proxyPort, proxyUsername, proxyPassword);				
 		
 		HttpGet httpGet = new HttpGet(url);
+		
+		if (username != null) {
+			UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
+			try {
+				httpGet.addHeader(new BasicScheme().authenticate(creds, httpGet));
+			} catch (AuthenticationException ae) {
+				throw new IOException(ae);
+			}
+		}
+		
 		HttpResponse response = httpclient.execute(httpGet);
 		
 		HttpEntity resEntity = response.getEntity();		
