@@ -202,7 +202,7 @@ public class HttpUtilities {
 			ClientConnectionManager cm = new SingleClientConnManager(params, schemeRegistry);
 			DefaultHttpClient httpclient = new DefaultHttpClient(cm, params);
 			
-			if (proxyHost != null) {				
+			if (proxyHost != null && proxyHost.trim().length() > 0) {				
 				if (proxyUsername != null) {
 					httpclient.getAuthSchemes().register("ntlm", new NTLMSchemeFactory());	 
 					httpclient.getCredentialsProvider().setCredentials(	 
