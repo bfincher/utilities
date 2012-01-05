@@ -7,7 +7,7 @@
     <groupId>com.fincher</groupId>
     <artifactId>http-utilities</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>HTTP Utilities</name>
 
 	<dependencies>
@@ -27,6 +27,12 @@
     		<groupId>org.apache.httpcomponents</groupId>
     		<artifactId>httpcore</artifactId>
     		<version>4.1.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
 		</dependency>
 	</dependencies>
 	

@@ -43,8 +43,11 @@ import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 public class HttpUtilities {
+	
+	private static final Logger LOGGER = Logger.getLogger(HttpUtilities.class);
 	
 	public static void downloadFile(File destFile, 
 			String url,
@@ -54,6 +57,12 @@ public class HttpUtilities {
 			int proxyPort,
 			String proxyUsername,
 			String proxyPassword) throws IOException {
+		
+		url = url.replace(" ", "%20");
+		url = url.replace("[", "%5B");
+		url = url.replace("]", "%5D");		
+		
+		LOGGER.info("Downloading URL " + url);
 		
 		HttpClient httpclient = buildHttpClient(proxyHost, proxyPort, proxyUsername, proxyPassword);				
 		
@@ -125,18 +134,13 @@ public class HttpUtilities {
 
 			httppost.setEntity(reqEntity);
 
-			//System.out.println("executing request " + httppost.getRequestLine());
 			HttpResponse response = httpclient.execute(httppost);
 			HttpEntity resEntity = response.getEntity();
 
-			//            System.out.println("----------------------------------------");
-			//            System.out.println(response.getStatusLine());
-			if (resEntity != null) {
-				System.out.println("Response content length: " + resEntity.getContentLength());
+			if (LOGGER.isDebugEnabled() && resEntity != null) {
+				LOGGER.debug("Response content length: " + resEntity.getContentLength());
 			}
 			EntityUtils.consume(resEntity);
-			//        } catch (Exception e) {
-			//        	e.printStackTrace();
 		} finally {
 			try { 
 				httpclient.getConnectionManager().shutdown(); 
@@ -155,18 +159,18 @@ public class HttpUtilities {
 			// set up a TrustManager that trusts everything
 			sslContext.init(null, new TrustManager[] { new X509TrustManager() {
 				public X509Certificate[] getAcceptedIssuers() {
-					System.out.println("getAcceptedIssuers =============");
+					LOGGER.debug("getAcceptedIssuers =============");
 					return null;
 				}
 
 				public void checkClientTrusted(X509Certificate[] certs,
 						String authType) {
-					System.out.println("checkClientTrusted =============");
+					LOGGER.debug("checkClientTrusted =============");
 				}
 
 				public void checkServerTrusted(X509Certificate[] certs,
 						String authType) {
-					System.out.println("checkServerTrusted =============");
+					LOGGER.debug("checkServerTrusted =============");
 				}
 			} }, new SecureRandom());
 
