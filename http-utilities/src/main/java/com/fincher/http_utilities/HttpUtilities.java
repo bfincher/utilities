@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Map;
@@ -58,12 +57,6 @@ public class HttpUtilities {
 			String proxyUsername,
 			String proxyPassword) throws IOException {
 		
-		url = url.replace(" ", "%20");
-		url = url.replace("[", "%5B");
-		url = url.replace("]", "%5D");		
-		
-		LOGGER.info("Downloading URL " + url);
-		
 		HttpClient httpclient = buildHttpClient(proxyHost, proxyPort, proxyUsername, proxyPassword);				
 		
 		HttpGet httpGet = new HttpGet(url);
@@ -109,7 +102,7 @@ public class HttpUtilities {
 		}	
 	}
 	
-	public static final void uploadFile(URL url, 
+	public static final void uploadFile(String url, 
 			File file,
 			Map<String, String> params,
 			String proxyHost,
@@ -120,7 +113,7 @@ public class HttpUtilities {
 		HttpClient httpclient = buildHttpClient(proxyHost, proxyPort, proxyUsername, proxyPassword);
 		
 		try {
-			HttpPost httppost = new HttpPost(url.toString());
+			HttpPost httppost = new HttpPost(url);
 
 			FileBody bin = new FileBody(file);
 
@@ -134,13 +127,18 @@ public class HttpUtilities {
 
 			httppost.setEntity(reqEntity);
 
+			//System.out.println("executing request " + httppost.getRequestLine());
 			HttpResponse response = httpclient.execute(httppost);
 			HttpEntity resEntity = response.getEntity();
 
-			if (LOGGER.isDebugEnabled() && resEntity != null) {
-				LOGGER.debug("Response content length: " + resEntity.getContentLength());
-			}
+			//            System.out.println("----------------------------------------");
+			//            System.out.println(response.getStatusLine());
+//			if (resEntity != null) {
+//				System.out.println("Response content length: " + resEntity.getContentLength());
+//			}
 			EntityUtils.consume(resEntity);
+			//        } catch (Exception e) {
+			//        	e.printStackTrace();
 		} finally {
 			try { 
 				httpclient.getConnectionManager().shutdown(); 
@@ -206,7 +204,7 @@ public class HttpUtilities {
 			ClientConnectionManager cm = new SingleClientConnManager(params, schemeRegistry);
 			DefaultHttpClient httpclient = new DefaultHttpClient(cm, params);
 			
-			if (proxyHost != null && proxyHost.trim().length() > 0) {				
+			if (proxyHost != null) {				
 				if (proxyUsername != null) {
 					httpclient.getAuthSchemes().register("ntlm", new NTLMSchemeFactory());	 
 					httpclient.getCredentialsProvider().setCredentials(	 
@@ -225,6 +223,12 @@ public class HttpUtilities {
 			throw new IOException(e);
 		}
 
+	}
+	
+	public static String htmlParamaterize(String param) {
+		param = param.replace(" ", "%20");
+		param = param.replace("/", "%2F");
+		return param;
 	}
 
 }

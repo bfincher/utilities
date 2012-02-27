@@ -7,10 +7,15 @@
     <groupId>com.fincher</groupId>
     <artifactId>database</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Database</name>
 
 	<dependencies>		
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
 	</dependencies>
 	
 	<build>
