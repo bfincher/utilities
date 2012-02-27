@@ -228,6 +228,8 @@ public class HttpUtilities {
 	public static String htmlParamaterize(String param) {
 		param = param.replace(" ", "%20");
 		param = param.replace("/", "%2F");
+		param = param.replace("{", "%7B");
+		param = param.replace("}", "%7D");
 		return param;
 	}
 
