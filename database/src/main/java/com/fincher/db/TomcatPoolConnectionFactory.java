@@ -27,9 +27,9 @@ public class TomcatPoolConnectionFactory implements ConnectionFactoryIfc {
 	
 	public Connection getConnection() throws SQLException {
 		Connection conn = dataSource.getConnection();
-		conn.setAutoCommit(autoCommit);
 		
 		try {
+			conn.setAutoCommit(autoCommit);
 			conn.createStatement().execute("select 1");
 		} catch (SQLException e) {
 			conn = dataSource.getConnection();
