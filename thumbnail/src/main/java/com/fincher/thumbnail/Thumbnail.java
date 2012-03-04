@@ -53,12 +53,67 @@ public class Thumbnail {
 			basePath = baseDir.getPath().replace(baseDir.getName(), "");
 			baseThumbsDir = new File(args[1]);
 			
+			renameLargeFileNames(baseDir);
 			processDir(baseDir);
+			deleteObsoleteThumbs(new File(basePath), baseThumbsDir); 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+	private static void renameLargeFileNames(File dir) {
+	    int count = 1;
+	    for (File file: dir.listFiles(filter)) {
+	    	if (file.isDirectory()) {
+			renameLargeFileNames(file);
+		} else if (file.getName().length() > 15) {
+			File newFile;
+			do {
+				StringBuilder newFileName = new StringBuilder("IMG_");
+				int zeroes = 4 - (int) (Math.log(count) / Math.log(10)) - 1;
+				for (int i = 0; i < zeroes; i++) {
+					newFileName.append(0);
+				}
+				newFileName.append(count++);
+				newFileName.append(".jpg");
+				newFile = new File(dir, newFileName.toString());
+			} while (newFile.exists());
+			
+			System.out.println("Renaming " + file.getPath() + " to " + newFile.getPath());
+			file.renameTo(newFile);
+		}
+	    }
+	}
 	
+	private static void deleteObsoleteThumbs(File picDir, File thumbDir) {
+	    for (File file: thumbDir.listFiles()) {
+	    	File picFile = new File(picDir, file.getName());
+		if (picFile.exists()) {
+			if (file.isDirectory()) {
+				deleteObsoleteThumbs(picFile, file);
+			}
+		} else {
+			System.out.println("Deleting " + file.getPath());
+		    if (file.isDirectory()) {
+		    	deleteDir(file);
+		    } else {
+		      file.delete();
+		    }
+		}
+	    }
+	}
+
+	private static void deleteDir(File dir) {
+		for (File file: dir.listFiles()) {
+		    if (file.isDirectory()) {
+		        deleteDir(file);
+		    } else {
+		        file.delete();
+		    }
+		}
+		dir.delete();
+	}
+
 	private static File getThumbsDir(File dir) {
 		String path = dir.getPath().replace(basePath, "");
 		File thumbsDir;
@@ -69,7 +124,7 @@ public class Thumbnail {
 		}
 		
 		if (!thumbsDir.exists()) {
-			thumbsDir.mkdir();
+			thumbsDir.mkdirs();
 		}
 		return thumbsDir;
 	}
