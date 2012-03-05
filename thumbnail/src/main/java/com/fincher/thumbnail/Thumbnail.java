@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
@@ -12,8 +13,12 @@ import org.imgscalr.Scalr;
 
 public class Thumbnail {
 	
-	private static Pattern jpgPattern;
-//	private static final String jpgAtEndOfStrPattern = "\\.(?i)(jpg)$";
+	// any char 1 or more times
+	// a .
+	// case insensitive "jpg" at end of line
+	private static Pattern imagePattern = Pattern.compile("(.+(\\.(?i)(jpg|png|gif|bmp|tif))$)");
+	
+	private static Pattern imageExtensionPattern = Pattern.compile("(\\.(?i)(jpg|png|gif|bmp|tif))$");
 	
 	private static String basePath;
 	private static File baseThumbsDir;
@@ -24,7 +29,7 @@ public class Thumbnail {
 			if (new File(dir, name).isDirectory()) {
 				return (!name.equals("thumbs"));
 			} else {
-				if (jpgPattern.matcher(name).matches()) {
+				if (imagePattern.matcher(name).matches()) {
 					File thumbsDir = getThumbsDir(dir);
 					if (thumbsDir.exists() && thumbsDir.isDirectory()) {
 						return !(new File(thumbsDir, name).exists());
@@ -41,13 +46,26 @@ public class Thumbnail {
 	private static final FileFilter filter = new FileFilter();
 
 	public static void main(String[] args) {
-		try {
-						
+		try {			
 			
-			jpgPattern = Pattern.compile("(.+\\.(?i)(jpg)$)");
-			// any char 1 or more times
-			// a .
-			// case insensitive "jpg" at end of line
+//			String[] strs = {
+//				"file1.jpg",
+//				"file2.tif",
+//				"filejpg",
+//				"filetif",
+//				"file3.dat"
+//			};
+//			
+//			for (String str: strs) {
+//				boolean match = imagePattern.matcher(str).matches();
+//				if (match) {
+//					System.out.println(str + " " + match + " " + getFileExtension(str));
+//				} else {
+//					System.out.println(str + " " + match);
+//				}
+//			}
+//			
+//			System.exit(0);
 			
 			File baseDir = new File(args[0]);
 			basePath = baseDir.getPath().replace(baseDir.getName(), "");
@@ -75,7 +93,10 @@ public class Thumbnail {
 					newFileName.append(0);
 				}
 				newFileName.append(count++);
-				newFileName.append(".jpg");
+				
+				String extension = getFileExtension(file.getName());
+				
+				newFileName.append(extension);
 				newFile = new File(dir, newFileName.toString());
 			} while (newFile.exists());
 			
@@ -148,9 +169,17 @@ public class Thumbnail {
 				
 				File destFile = new File(thumbsDir, file.getName());
 				
-				ImageIO.write(thumbnail, "jpg", destFile); 
+				String extension = getFileExtension(file.getName()).substring(1);
+				
+				ImageIO.write(thumbnail, extension, destFile); 
 			}
 		}
+	}
+	
+	private static String getFileExtension(String fileName) {
+		Matcher matcher = imageExtensionPattern.matcher(fileName);
+		matcher.find();
+		return matcher.group();
 	}
 
 }
