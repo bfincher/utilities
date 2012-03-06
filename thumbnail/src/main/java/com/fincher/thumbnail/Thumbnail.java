@@ -16,9 +16,9 @@ public class Thumbnail {
 	// any char 1 or more times
 	// a .
 	// case insensitive "jpg" at end of line
-	private static Pattern imagePattern = Pattern.compile("(.+(\\.(?i)(jpg|png|gif|bmp|tif))$)");
+	public static final Pattern imagePattern = Pattern.compile("(.+(\\.(?i)(jpg|png|gif|bmp))$)");
 	
-	private static Pattern imageExtensionPattern = Pattern.compile("(\\.(?i)(jpg|png|gif|bmp|tif))$");
+	public static final Pattern imageExtensionPattern = Pattern.compile("(\\.(?i)(jpg|png|gif|bmp))$");
 	
 	private static String basePath;
 	private static File baseThumbsDir;
