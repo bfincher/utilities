@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Map;
@@ -226,11 +228,17 @@ public class HttpUtilities {
 	}
 	
 	public static String htmlParamaterize(String param) {
-		param = param.replace(" ", "%20");
-		param = param.replace("/", "%2F");
-		param = param.replace("{", "%7B");
-		param = param.replace("}", "%7D");
-		return param;
+		try {
+			return URLEncoder.encode(param, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return null;
+		}
+//		param = param.replace(" ", "%20");
+//		param = param.replace("/", "%2F");
+//		param = param.replace("{", "%7B");
+//		param = param.replace("}", "%7D");
+//		return param;
 	}
 
 }
