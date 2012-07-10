@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.fincher</groupId>
+  <modelVersion>4.0.0</modelVersion>  
+  <parent>
+    <groupId>com.fincher</groupId>
+	<artifactId>com.fincher</artifactId>
+	<version>1.0.0</version>
+  </parent>
+	
   <artifactId>text-to-html-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <version>1.0</version>
@@ -26,31 +31,4 @@
     </dependency>
 
   </dependencies>
-
-  <build>
-      <plugins>
-          <plugin>
-	      <artifactId>maven-compiler-plugin</artifactId>
-	      <version>2.3.2</version>
-	      <configuration>
-	          <compilerVersion>1.7</compilerVersion>
-	          <source>1.7</source>
-	          <target>1.7</target>
-	      </configuration>
-	  </plugin>
-      </plugins>
-  </build>
-
-<distributionManagement>
-  <repository>
-    <id>central</id>
-    <name>central</name>
-    <url>http://www.fincherhome.com:8081/nexus/content/repositories/releases</url>
-  </repository>
-  <snapshotRepository>
-    <id>snapshots</id>
-    <name>snapshots</name>
-    <url>http://www.fincherhome.com:8081/nexus/content/repositories/snapshots</url>
-  </snapshotRepository>
-</distributionManagement>
 </project>
