@@ -18,8 +18,8 @@ public interface DBMSIfc <T> {
 	
 	public void createTable(boolean autoCommit) throws SQLException;	
 	
-	public T insert(T t, boolean autoCommit) 
-	throws SQLException;
+//	public T insert(T t, boolean autoCommit) 
+//	throws SQLException;
 	
 	public void closeConnection() throws SQLException;
 
