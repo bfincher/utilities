@@ -5,20 +5,20 @@
 	<parent>
 		<groupId>com.fincher</groupId>
 		<artifactId>com.fincher</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 	
 	<groupId>com.fincher.htpasswd</groupId>
 	<artifactId>htpasswd-editor</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<name>htpasswd Editor</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>	
 		<dependency>
 			<groupId>com.fincher.htpasswd</groupId>
 			<artifactId>htpasswd</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.4</version>
 		</dependency>	
 		
 		<dependency>
