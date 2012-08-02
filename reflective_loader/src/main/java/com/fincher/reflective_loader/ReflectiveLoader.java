@@ -1,6 +1,5 @@
 package com.fincher.reflective_loader;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,7 +35,7 @@ public abstract class ReflectiveLoader {
 	 */
 	protected void load() throws ReflectionException {		
 		try {
-			String repClassAsPath = representativeClass.getName().replace('.', File.separatorChar) + ".class";
+			String repClassAsPath = representativeClass.getName().replace('.', '/') + ".class";
 			URI uri = classloader.getResource(repClassAsPath).toURI();
 //			URI uri = classloader.getResource(baseJavaPackage.replace('.', File.separatorChar)).toURI();
 

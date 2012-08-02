@@ -28,8 +28,10 @@ class JarClassLoader {
 			throws ReflectionException {
 
 		try {
+			baseJavaPackage = baseJavaPackage.replace('.', '/');
 			int idx = uri.toString().indexOf(".jar!");
 			String jarFileName = uri.toString().substring(9, idx + 4);
+			jarFileName = jarFileName.replace("%20"," ");
 
 			JarFile jarFile = null;
 			try {
@@ -42,8 +44,10 @@ class JarClassLoader {
 					if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
 						String className = entry.getName().replace(File.separatorChar, '.');
 						className = className.substring(0, className.length() - 6);
-						if (className.startsWith(baseJavaPackage))
+						if (className.startsWith(baseJavaPackage)) {
+							className = className.replace('/', '.');
 							parent.loadClass(className);
+						}
 					}
 				}
 			} finally {
