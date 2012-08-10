@@ -1,8 +1,11 @@
 package com.fincher.htpasswd;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +45,8 @@ public class HtpasswdServlet extends HttpServlet {
 	private static final String LOGGED_IN_AS_USER = "loggedInAsUser";
 	
 	private static AtomicInteger nextInstanceNumber = new AtomicInteger(1);
+	
+	private final Map<String, AbstractHtpasswd> htpasswdMap = new HashMap<String, AbstractHtpasswd>();
 	
 	private List<String> fileNames;
 //	private String fileName = null;
@@ -150,7 +155,7 @@ public class HtpasswdServlet extends HttpServlet {
             	out.println("<P> You must select a file name");
             } else {
             	session.setAttribute(FILE_NAME_ATTR_NAME, fileName);
-            	fileContents = Htpasswd.readPasswordFile(fileName);
+            	fileContents = getHtpasswd(fileName).readPasswordFile(fileName);
             	setFileContents(session, fileContents);
             	if (debugMode) {
             		out.println("fileContents = " + fileContents + "<br>");
@@ -321,7 +326,8 @@ public class HtpasswdServlet extends HttpServlet {
     		HttpSession session = request.getSession();
     		Map<String, String> fileContents = getFileContents(session);
     		fileContents.remove(userName);
-    		Htpasswd.writePasswordFile((String)session.getAttribute(FILE_NAME_ATTR_NAME), fileContents);
+    		String fileName = (String)session.getAttribute(FILE_NAME_ATTR_NAME);
+    		getHtpasswd(fileName).writePasswordFile(fileName, fileContents);
     		
     		showConfirmation(out, "User " + userName + " deleted");    		
     		break;
@@ -336,6 +342,9 @@ public class HtpasswdServlet extends HttpServlet {
     	String submit = request.getParameter("submit");
     	OkCancelEnum okCancel = OkCancelEnum.valueOf(submit);
     	
+    	HttpSession session = request.getSession();
+    	String fileName = (String)session.getAttribute(FILE_NAME_ATTR_NAME);
+    	
     	if (debugMode) {
     		out.println("inside performChangePassword.  okCancel = " + okCancel + "<br>");
     	}
@@ -343,17 +352,18 @@ public class HtpasswdServlet extends HttpServlet {
     	switch (okCancel) {
     	case Ok:
     		
+    		String userName = request.getParameter("userName");
     		String password1 = request.getParameter("password1");
     		String password2 = request.getParameter("password2");
+    		AbstractHtpasswd htpasswd = getHtpasswd(fileName);
+    		
     		if (password1.equals(password2)) {    			
-    			String crypted = Htpasswd.cryptPassword(password1);
-    			
-    			HttpSession session = request.getSession();
+    			String crypted = htpasswd.cryptPassword(userName, password1);
+    			    			
         		Map<String, String> fileContents = getFileContents(session);
-        		
-    			String userName = request.getParameter("userName");
+        		    			
     			fileContents.put(userName, crypted);
-    			Htpasswd.writePasswordFile((String)session.getAttribute(FILE_NAME_ATTR_NAME), fileContents);
+    			htpasswd.writePasswordFile(fileName, fileContents);
     			
     			showConfirmation(out, "User " + userName + " password changed");    			
     		} else {
@@ -368,9 +378,11 @@ public class HtpasswdServlet extends HttpServlet {
     }
     
     private void performAddUser(HttpServletRequest request, PrintWriter out) throws IOException {
-    	String userName = request.getParameter("userName");
+    	String userName = request.getParameter("userName");    	
     	
     	HttpSession session = request.getSession();
+    	String fileName = (String)session.getAttribute(FILE_NAME_ATTR_NAME);
+    	AbstractHtpasswd htpasswd = getHtpasswd(fileName);
 		Map<String, String> fileContents = getFileContents(session);
     	
     	if (fileContents.containsKey(userName)) {
@@ -383,10 +395,10 @@ public class HtpasswdServlet extends HttpServlet {
     		String password2 = request.getParameter("password2");
 		
     		if (password1.equals(password2)) {    			
-    			String crypted = Htpasswd.cryptPassword(password1);
+    			String crypted = htpasswd.cryptPassword(userName, password1);
 			
     			fileContents.put(userName, crypted);
-    			Htpasswd.writePasswordFile((String)session.getAttribute(FILE_NAME_ATTR_NAME), fileContents);
+    			htpasswd.writePasswordFile(fileName, fileContents);
 			
     			showConfirmation(out, "User " + userName + " added successfully");    			
     		} else {
@@ -432,10 +444,12 @@ public class HtpasswdServlet extends HttpServlet {
 		out.println("</form>"); 
     }
     
-    private void login(HttpServletRequest request, PrintWriter out, HttpSession session) throws IOException {
-    	Map<String, String> pwFile = Htpasswd.readPasswordFile(fileNames.get(0));
+    private void login(HttpServletRequest request, PrintWriter out, HttpSession session) throws IOException {    	
     	String userName = request.getParameter("userName");
     	String password = request.getParameter("password");
+    	String fileName = fileNames.get(0);
+    	AbstractHtpasswd htpasswd = getHtpasswd(fileName);
+    	Map<String, String> pwFile = htpasswd.readPasswordFile(fileName);
     	
     	boolean error = false;
     	
@@ -443,7 +457,7 @@ public class HtpasswdServlet extends HttpServlet {
     	if (encodedPw == null) { 
     		error = true;
     	} else {
-    		error = !Htpasswd.verifyPassword(password, encodedPw);
+    		error = !htpasswd.verifyPassword(userName, password, encodedPw);
     	}
     	
     	if (error) {
@@ -469,6 +483,33 @@ public class HtpasswdServlet extends HttpServlet {
     
     private static String getLoggedInAsUser(HttpSession session) {
     	return (String)session.getAttribute(LOGGED_IN_AS_USER);
+    }
+    
+    private AbstractHtpasswd getHtpasswd(String fileName) throws IOException {
+    	AbstractHtpasswd htpasswd = htpasswdMap.get(fileName);
+    	if (htpasswd == null) {
+    		BufferedReader input = null;
+    		try {
+    			input = new BufferedReader(new FileReader(fileName));
+    			String str = input.readLine();
+    			if (str.indexOf("{SHA}") == -1) {
+    				StringTokenizer st = new StringTokenizer(str, ":");
+    				st.nextToken();
+    				String realm = st.nextToken();
+    				htpasswd = new HtpasswdMd5(realm);
+    			} else {
+    				htpasswd = new HtpasswdSha();
+    			}
+    			
+    			htpasswdMap.put(fileName, htpasswd);
+    		} finally {
+    			if (input != null) {
+    				input.close();
+    			}
+    		}
+    	}
+    	
+    	return htpasswd;
     }
     
 }
