@@ -2,6 +2,7 @@ package com.fincher.htpasswd;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,11 +56,15 @@ public abstract class AbstractHtpasswd {
 	}	
 
 	public Map<String, String> readPasswordFile(String fileName) throws IOException {
+		return readPasswordFile(new File(fileName));
+	}
+	
+	public Map<String, String> readPasswordFile(File file) throws IOException {
 		NaturalOrderMap<String, String> map = new NaturalOrderMap<String, String>();
 
 		BufferedReader input = null;
 		try {
-			input = new BufferedReader(new FileReader(fileName));
+			input = new BufferedReader(new FileReader(file));
 			String str;
 
 			while ((str = input.readLine()) != null) {
@@ -75,12 +80,16 @@ public abstract class AbstractHtpasswd {
 			}
 		}
 	}
-
+	
 	public void writePasswordFile (String fileName, Map<String, String> passwords) throws IOException {
+		writePasswordFile(new File(fileName), passwords);
+	}
+
+	public void writePasswordFile (File file, Map<String, String> passwords) throws IOException {
 		BufferedWriter output = null;
 		
 		try {
-			output = new BufferedWriter(new FileWriter(fileName));
+			output = new BufferedWriter(new FileWriter(file));
 		
 			for (Iterator<String> iterator = passwords.keySet().iterator(); iterator.hasNext() ; ) {
 				String userId = iterator.next();

@@ -11,7 +11,7 @@ public class HtpasswdSha extends AbstractHtpasswd {
 	
 	@Override
 	public String cryptPassword(String username, String password) {
-		return "{SHA}" + getMessageDigest().digest(password.getBytes());		
+		return "{SHA}" + new sun.misc.BASE64Encoder().encode(getMessageDigest().digest(password.getBytes()));		
 	}		
 	
 	@Override
