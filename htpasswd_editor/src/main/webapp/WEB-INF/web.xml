@@ -33,12 +33,12 @@
         <servlet-class>com.fincher.htpasswd.HtpasswdServlet</servlet-class>
         <init-param>
         	<param-name>mainHtpasswdFile</param-name>
-        	<param-value>/usr/local/tomcat/webapps/htpasswd_editor.htpasswd</param-value>
+        	<param-value>${catalina.home}/webapps/htpasswd_editor.htpasswd</param-value>
         </init-param>
         
         <init-param>
         	<param-name>passwdFiles</param-name>
-        	<param-value>/etc/subversion/passwd,/var/www/private/.htpasswd,/usr/local/tomcat/webapps/file_sync.htpasswd</param-value>
+        	<param-value>/etc/subversion/passwd,/var/www/private/.htpasswd,${catalina.home}/webapps/file_sync.htpasswd</param-value>
         </init-param>
         
         <init-param>
