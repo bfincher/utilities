@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>com.fincher</groupId>
 		<artifactId>com.fincher</artifactId>
-		<version>1.0.1</version>
+		<version>1.0.2</version>
 	</parent>
 	
 	<artifactId>map-util</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<name>Map Utilities</name>
 	<dependencies>				
 		<dependency>
