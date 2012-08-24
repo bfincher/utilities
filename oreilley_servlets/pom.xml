@@ -53,8 +53,8 @@
   
   <distributionManagement>
 		<repository>
-			<id>3rd party</id>
-			<name>3rd party</name>
+			<id>central</id>
+			<name>central</name>
 			<url>http://www.fincherhome.com/nexus/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
