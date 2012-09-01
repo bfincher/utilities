@@ -10,7 +10,7 @@
 	
 	<artifactId>reflective-loader</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<name>Reflective Loader</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>

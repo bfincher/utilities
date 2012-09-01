@@ -1,6 +1,5 @@
 package com.fincher.reflective_loader;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Enumeration;
@@ -42,7 +41,8 @@ class JarClassLoader {
 				while (files.hasMoreElements()) {
 					JarEntry entry = files.nextElement();
 					if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
-						String className = entry.getName().replace(File.separatorChar, '.');
+//						String className = entry.getName().replace(File.separatorChar, '.');
+						String className = entry.getName();
 						className = className.substring(0, className.length() - 6);
 						if (className.startsWith(baseJavaPackage)) {
 							className = className.replace('/', '.');

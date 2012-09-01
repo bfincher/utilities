@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.log4j.Logger;
+
 /** Use Java Reflection to load classes from the classpath
  * 
  * @author Brian Fincher
  *
  */
 public abstract class ReflectiveLoader {	
+	
+	private static final Logger LOGGER = Logger.getLogger(ReflectiveLoader.class);
 
 	private final String baseJavaPackage;	
 
@@ -38,6 +42,10 @@ public abstract class ReflectiveLoader {
 			String repClassAsPath = representativeClass.getName().replace('.', '/') + ".class";
 			URI uri = classloader.getResource(repClassAsPath).toURI();
 //			URI uri = classloader.getResource(baseJavaPackage.replace('.', File.separatorChar)).toURI();
+			
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("uri = " + uri);
+			}
 
 			int idx = uri.toString().indexOf(".jar!");
 			if (idx != -1) {
