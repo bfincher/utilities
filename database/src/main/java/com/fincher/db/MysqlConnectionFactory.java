@@ -19,6 +19,10 @@ public class MysqlConnectionFactory extends ConnectionFactory {
 	private final String fullDbURL;
 	
 	private static PreparedStatement tableExistsPS;
+
+        public static String getDBURL(String hostName) {
+            return "jdbc:mysql://" + hostName;
+        }
 	
 	public MysqlConnectionFactory(boolean autoCommit,
 			String baseDbUrl,
