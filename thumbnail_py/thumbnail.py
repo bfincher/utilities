@@ -9,9 +9,13 @@ imagePattern = re.compile("(.+(\\.(?i)(jpg|png|gif|bmp))$)")
 imageExtensionPattern = re.compile("(\\.(?i)(jpg|png|gif|bmp))$")
 
 imageTypes = {'JPG' : 'JPEG',
+               'jpg' : 'JPEG',
                'PNG' : 'PNG',
+               'png' : 'PNG',
 	       'GIF' : 'GIF',
-	       'BMP' : 'BMP'}
+	       'gif' : 'GIF',
+	       'BMP' : 'BMP',
+	       'bmp' : 'BMP'}
 
 class Thumbnail():
     def __init__(self, basePath, baseThumbsDir):
@@ -56,15 +60,17 @@ class Thumbnail():
                 self.processDir(file)
             else:
 	        print "Processing %s" % file
-                im = Image.open(file)
-                im.thumbnail((150, 150), Image.ANTIALIAS)
+                try:
+                    im = Image.open(file)
+                    im.thumbnail((150, 150), Image.ANTIALIAS)
 
-	        thumbsDir = self.getThumbsDir(dir)
-                print "thumbsDir2 = %s\n\n" % thumbsDir
-	        destFile = thumbsDir + "/" + f
-	        extension = getFileExtension(f)[1:]
+	            thumbsDir = self.getThumbsDir(dir)
+	            destFile = thumbsDir + "/" + f
+	            extension = getFileExtension(f)[1:]
 
-                im.save(destFile,  imageTypes[extension])
+                    im.save(destFile,  imageTypes[extension])
+                except IOError as e:
+                    print e
 
     def renameLargeFiles(self, dir):
         count = 1
